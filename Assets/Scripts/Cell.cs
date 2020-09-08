@@ -34,19 +34,29 @@ public class Cell : MonoBehaviour
         RewardDisplay.text = Reward.ToString();
 
         //CellRectTransform.ForceUpdateRectTransforms();
-        CellRectTransform.sizeDelta =  new Vector2(Board.TileSize, Board.TileSize);
+        CellRectTransform.sizeDelta =  new Vector2(Board.TileWidth, Board.TileHeight);
 
+        /*
         //Temp: Example of injecting component data for the cell!!!
         GameObject resourceTemp = (GameObject)Instantiate(Resources.Load("agent_idle"));
         resourceTemp.transform.parent = this.transform;
         resourceTemp.transform.position = new Vector2(this.transform.position.x, this.transform.position.y+10);
         //EntityImage.sprite = resourceTemp.GetComponent<SpriteRenderer>().sprite;
         Entity = resourceTemp;
+        */
+    }
+
+    public void PlacePiece(string resourceID)
+    {
+        GameObject resourceTemp = (GameObject)Instantiate(Resources.Load(resourceID));
+        resourceTemp.transform.parent = this.transform;
+        resourceTemp.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + 20); //slight offset of 10
+        Entity = resourceTemp;
     }
 
     public Vector2 GetTileCenter()
     {
-        float tileSize = Board.TileSize;
+        float tileSize = Board.TileWidth;
         //float tileOffset = Board.TileSize / 2;
         Vector3 cellCenter = Vector2.zero;
         cellCenter.x += (tileSize * BoardPosition.x);

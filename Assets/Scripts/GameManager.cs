@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
         Debug.Log(Board.Rows);
         Board.GenerateGrid();
 
-        /*
+        
         ///Setting up the initial board for a demo run
         //setup Initial Agent
         SetEntity(new Vector2Int(0, 0), EntityType.agent);
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         SetEntity(new Vector2Int(7, 4), EntityType.obstacle);
         SetEntity(new Vector2Int(7, 5), EntityType.obstacle);
         SetEntity(new Vector2Int(7, 6), EntityType.obstacle);
-        */
+        
     }
 
 
@@ -59,24 +59,10 @@ public class GameManager : MonoBehaviour
     public void SetEntity(Vector2Int tileCoords, EntityType entityType)
     {
         Cell subjectCell = Board.BoardCells[tileCoords.x, tileCoords.y];
-
-        switch (entityType)
+        string entityID = entityIDCatalouge[entityType];
+        if(entityID != "") //TODO: there can be a cleaner condition check here
         {
-            case EntityType.agent:
-                GameObject prefabAgent = (GameObject)Instantiate(Resources.Load("agent_idle"));
-                Agent agent = prefabAgent.GetComponent<Agent>();
-                agent.SetupAgent(subjectCell);
-                break;
-            case EntityType.goal:
-                GameObject prefabGoal = (GameObject)Instantiate(Resources.Load("goal_idle"));
-                GoalState goal = prefabGoal.GetComponent<GoalState>();
-                goal.SetupAgent(subjectCell);
-                break;
-            case EntityType.obstacle:
-                GameObject prefabObstacle = (GameObject)Instantiate(Resources.Load("obstacle_idle"));
-                ObstacleState obstacle = prefabObstacle.GetComponent<ObstacleState>();
-                obstacle.SetupAgent(subjectCell);
-                break;
+            subjectCell.PlacePiece(entityID);
         }
     }
 
@@ -87,4 +73,12 @@ public class GameManager : MonoBehaviour
         obstacle,
         empty
     }
+
+    public Dictionary<EntityType, string> entityIDCatalouge = new Dictionary<EntityType, string>
+    {
+        [EntityType.agent] = "agent_idle",
+        [EntityType.goal] = "goal_idle",
+        [EntityType.obstacle] = "obstacle_idle",
+        [EntityType.empty] = ""
+    };
 }

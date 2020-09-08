@@ -218,6 +218,14 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 857705097716336410, guid: 3475350c1fc8dd345a8311f02d1a6d10, type: 3}
+      propertyPath: Rows
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 857705097716336410, guid: 3475350c1fc8dd345a8311f02d1a6d10, type: 3}
+      propertyPath: Cols
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3475350c1fc8dd345a8311f02d1a6d10, type: 3}
 --- !u!224 &31649263 stripped
@@ -227,7 +235,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &31649265 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114753511022822146, guid: 3475350c1fc8dd345a8311f02d1a6d10, type: 3}
+  m_CorrespondingSourceObject: {fileID: 857705097716336410, guid: 3475350c1fc8dd345a8311f02d1a6d10, type: 3}
   m_PrefabInstance: {fileID: 15221005}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

@@ -6,12 +6,14 @@ using UnityEngine.UI;
 public class BoardManager : MonoBehaviour
 {
     //Board dimension presents
-    [HideInInspector]
     public int Rows = 8;
-    [HideInInspector]
     public int Cols = 8;
+
+    //Used in calculating Tile Dimensions
     [HideInInspector]
-    public float TileSize;
+    public float TileWidth;
+    [HideInInspector]
+    public float TileHeight;
 
     //Reference to the Cell's prefab
     public GameObject CellPrefab;
@@ -31,9 +33,8 @@ public class BoardManager : MonoBehaviour
 
         //Get Dimensions of board from parent canvas to scale tiles
         RectTransform parentRect = this.GetComponentInParent<RectTransform>();
-        float gridW = parentRect.rect.width / Rows;
-        float gridH = parentRect.rect.height / Cols;
-        TileSize = gridW; //The Grid should always be a square shape
+        TileWidth = parentRect.rect.width / Rows;
+        TileHeight = parentRect.rect.height / Cols;
 
         Debug.Log(string.Format("--> Board Dim; {0} {1}", parentRect.rect.width, parentRect.rect.height));
 
@@ -46,7 +47,7 @@ public class BoardManager : MonoBehaviour
 
                 //Position
                 RectTransform rectTransform = tilePrefab.GetComponent<RectTransform>();
-                rectTransform.anchoredPosition = new Vector2((gridW * row) + 50, (gridH * col) + 50);
+                rectTransform.anchoredPosition = new Vector2((TileWidth * row) + 50, (TileHeight * col) + 50);
 
                 //Setup Cell
                 BoardCells[row, col] = tilePrefab.GetComponent<Cell>();
