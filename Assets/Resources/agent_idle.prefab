@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7159110741156632631}
   - component: {fileID: 6674589374590822254}
   - component: {fileID: 3498523397437009360}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: agent_idle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 7159110741156632628}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.1, y: -0.45713362, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 80, y: 80, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -9214166400764900579, guid: 3ba8e415c4bc1be48977ab65f2c92d11, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -115,3 +115,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def57eef683ad3c4ba4e14ec31f20471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Delegates: []

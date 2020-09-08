@@ -5,47 +5,54 @@ using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
 {
-    public int Rows = 8;
-
-    public int Cols = 8;
-
-    public float TileSize = 1;
-
+    //Board dimension presents
     [HideInInspector]
-    public Cell[,] BoardCells = new Cell[8, 8];
+    public int Rows = 8;
+    [HideInInspector]
+    public int Cols = 8;
+    [HideInInspector]
+    public float TileSize;
 
-    void Start()
-    {
-        GenerateGrid();
-    }
+    //Reference to the Cell's prefab
+    public GameObject CellPrefab;
+
+    //Array holding cells
+    [HideInInspector]
+    public Cell[,] BoardCells;
 
     public void GenerateGrid()
     {
+        //Generate Holder's for the board based on provided dimensions
+        BoardCells = new Cell[Rows, Cols];
+
         //Grab Tile references
-        GameObject tile1Prefab = (GameObject)Instantiate(Resources.Load("floor_1"));
-        GameObject tile2Prefab = (GameObject)Instantiate(Resources.Load("floor_2"));
-        float gridW = Cols * TileSize;
-        float gridH = Rows * TileSize;
+        Color32 evenColors = new Color32(230, 220, 187, 255);
+        Color32 oddColors = new Color32(202, 167, 132, 255);
+
+        //Get Dimensions of board from parent canvas to scale tiles
+        RectTransform parentRect = this.GetComponentInParent<RectTransform>();
+        float gridW = parentRect.rect.width / Rows;
+        float gridH = parentRect.rect.height / Cols;
+        TileSize = gridW; //The Grid should always be a square shape
+
+        Debug.Log(string.Format("--> Board Dim; {0} {1}", parentRect.rect.width, parentRect.rect.height));
 
         for (int row = 0; row < Rows; row++)
         {
             for(int col = 0; col < Cols; col++)
             {
-                float posX = col * TileSize;
-                float posY = row * -TileSize;
-                GameObject refTile = ((col-row) % 2 == 0) ? tile1Prefab : tile2Prefab;
-                GameObject tile = Instantiate(refTile, transform);
-                tile.transform.position = new Vector2(posX, posY);
+                GameObject tilePrefab = Instantiate(CellPrefab, transform);
+                Color32 curColor = ((col-row) % 2 == 0) ? evenColors : oddColors;
 
-                BoardCells[row, col] = tile.GetComponent<Cell>();
-                BoardCells[row, col].Setup(new Vector2Int(row, col), this, tile);
+                //Position
+                RectTransform rectTransform = tilePrefab.GetComponent<RectTransform>();
+                rectTransform.anchoredPosition = new Vector2((gridW * row) + 50, (gridH * col) + 50);
+
+                //Setup Cell
+                BoardCells[row, col] = tilePrefab.GetComponent<Cell>();
+                BoardCells[row, col].Setup(new Vector2Int(row, col), this);
+                BoardCells[row, col].GetComponent<Image>().color = curColor;
             }
         }
-
-        Destroy(tile1Prefab);
-        Destroy(tile2Prefab);
-
-        //Center the Board on the Main Camera
-        //transform.position = new Vector2(-(gridW/2) + TileSize/2, gridH/2 - TileSize/2);
     }
 }

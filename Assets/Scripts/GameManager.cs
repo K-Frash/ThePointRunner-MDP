@@ -8,9 +8,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Board = this.GetComponent<BoardManager>();
-        Debug.Log(Board.Cols);
+        Debug.Log(Board.Rows);
+        Board.GenerateGrid();
 
+        /*
         ///Setting up the initial board for a demo run
         //setup Initial Agent
         SetEntity(new Vector2Int(0, 0), EntityType.agent);
@@ -45,6 +46,7 @@ public class GameManager : MonoBehaviour
         SetEntity(new Vector2Int(7, 4), EntityType.obstacle);
         SetEntity(new Vector2Int(7, 5), EntityType.obstacle);
         SetEntity(new Vector2Int(7, 6), EntityType.obstacle);
+        */
     }
 
 
@@ -64,22 +66,16 @@ public class GameManager : MonoBehaviour
                 GameObject prefabAgent = (GameObject)Instantiate(Resources.Load("agent_idle"));
                 Agent agent = prefabAgent.GetComponent<Agent>();
                 agent.SetupAgent(subjectCell);
-                subjectCell.ContentObject = agent;
-
                 break;
             case EntityType.goal:
                 GameObject prefabGoal = (GameObject)Instantiate(Resources.Load("goal_idle"));
                 GoalState goal = prefabGoal.GetComponent<GoalState>();
                 goal.SetupAgent(subjectCell);
-                subjectCell.ContentObject = goal;
-
                 break;
             case EntityType.obstacle:
                 GameObject prefabObstacle = (GameObject)Instantiate(Resources.Load("obstacle_idle"));
                 ObstacleState obstacle = prefabObstacle.GetComponent<ObstacleState>();
                 obstacle.SetupAgent(subjectCell);
-                subjectCell.ContentObject = obstacle;
-
                 break;
         }
     }
