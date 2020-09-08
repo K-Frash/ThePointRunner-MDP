@@ -5,48 +5,36 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public BoardManager Board;
-    // Start is called before the first frame update
+
+    //Load in map data via a matric of strings where;
+    // - EntityType.obstacle is an obstacle
+    // - "A" is the agent
+    // - "G" is a goal state
+    // - EntityType.empty is an empty state
+    public EntityType[,] sceneSetup;
+
+    public string[,] sceneRewardMatrix;
+
     void Start()
     {
         Debug.Log(Board.Rows);
         Board.GenerateGrid();
 
-        
-        ///Setting up the initial board for a demo run
-        //setup Initial Agent
-        SetEntity(new Vector2Int(0, 0), EntityType.agent);
+        //Demo Scene on any first load
+        sceneSetup = new EntityType[,]
+        {
+            {EntityType.goal , EntityType.obstacle, EntityType.obstacle, EntityType.obstacle, EntityType.obstacle, EntityType.obstacle, EntityType.empty   , EntityType.goal    },
+            {EntityType.empty, EntityType.obstacle, EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.obstacle},
+            {EntityType.empty, EntityType.empty   , EntityType.empty   , EntityType.obstacle, EntityType.obstacle, EntityType.empty   , EntityType.empty   , EntityType.obstacle},
+            {EntityType.empty, EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.obstacle},
+            {EntityType.empty, EntityType.obstacle, EntityType.obstacle, EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.obstacle, EntityType.obstacle},
+            {EntityType.empty, EntityType.obstacle, EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.empty   },
+            {EntityType.empty, EntityType.empty   , EntityType.empty   , EntityType.empty   , EntityType.obstacle, EntityType.empty   , EntityType.goal    , EntityType.obstacle},
+            {EntityType.agent, EntityType.empty   , EntityType.obstacle, EntityType.obstacle, EntityType.obstacle, EntityType.obstacle, EntityType.obstacle, EntityType.obstacle}
+        };
 
-        //Setup Goal States
-        SetEntity(new Vector2Int(7, 7), EntityType.goal);
-        SetEntity(new Vector2Int(0, 7), EntityType.goal);
-        SetEntity(new Vector2Int(6, 1), EntityType.goal);
-
-        //Setup Spikes
-        SetEntity(new Vector2Int(2, 0), EntityType.obstacle);
-        SetEntity(new Vector2Int(3, 0), EntityType.obstacle);
-        SetEntity(new Vector2Int(4, 0), EntityType.obstacle);
-        SetEntity(new Vector2Int(5, 0), EntityType.obstacle);
-        SetEntity(new Vector2Int(6, 0), EntityType.obstacle);
-        SetEntity(new Vector2Int(7, 0), EntityType.obstacle);
-        SetEntity(new Vector2Int(1, 2), EntityType.obstacle);
-        SetEntity(new Vector2Int(1, 3), EntityType.obstacle);
-        SetEntity(new Vector2Int(2, 3), EntityType.obstacle);
-        SetEntity(new Vector2Int(3, 5), EntityType.obstacle);
-        SetEntity(new Vector2Int(4, 5), EntityType.obstacle);
-        SetEntity(new Vector2Int(4, 1), EntityType.obstacle);
-        SetEntity(new Vector2Int(7, 1), EntityType.obstacle);
-        SetEntity(new Vector2Int(1, 6), EntityType.obstacle);
-        SetEntity(new Vector2Int(1, 7), EntityType.obstacle);
-        SetEntity(new Vector2Int(2, 7), EntityType.obstacle);
-        SetEntity(new Vector2Int(3, 7), EntityType.obstacle);
-        SetEntity(new Vector2Int(4, 7), EntityType.obstacle);
-        SetEntity(new Vector2Int(5, 7), EntityType.obstacle);
-        SetEntity(new Vector2Int(6, 3), EntityType.obstacle);
-        SetEntity(new Vector2Int(7, 3), EntityType.obstacle);
-        SetEntity(new Vector2Int(7, 4), EntityType.obstacle);
-        SetEntity(new Vector2Int(7, 5), EntityType.obstacle);
-        SetEntity(new Vector2Int(7, 6), EntityType.obstacle);
-        
+        // Sets up whatever configuration is present in sceneSetup
+        SetUpMap();
     }
 
 
@@ -56,9 +44,23 @@ public class GameManager : MonoBehaviour
         //Debug.Log("Up");
     }
 
+    public void SetUpMap()
+    {
+        int rows = sceneSetup.GetLength(0);
+        int cols = sceneSetup.GetLength(1);
+        for (int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                // Need to flip the x coord due to cartesian coordinate system for the canvas
+                SetEntity(new Vector2Int(i, j), sceneSetup[rows - i - 1, j]);
+            }
+        }
+    }
+
     public void SetEntity(Vector2Int tileCoords, EntityType entityType)
     {
-        Cell subjectCell = Board.BoardCells[tileCoords.x, tileCoords.y];
+        Cell subjectCell = Board.BoardCells[tileCoords.y, tileCoords.x];
         string entityID = entityIDCatalouge[entityType];
         if(entityID != "") //TODO: there can be a cleaner condition check here
         {
