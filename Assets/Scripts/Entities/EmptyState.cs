@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalState : BaseState
+public class EmptyState : BaseState
 {
-    public GoalState(string reward)
+    public EmptyState(string reward)
     {
         Reward = reward;
     }

@@ -13,43 +13,33 @@ public class GameManager : MonoBehaviour
     // - "A" is the agent
     // - "G" is a goal state
     // - EntityType.empty is an empty state
-    public (EntityType, string)[,] sceneSetup;
-
-    public string[,] sceneRewardMatrix;
+    public BaseState[,] sceneSetup;
 
     void Start()
     {
         //Demo Scene on any first load
-        sceneSetup = new (EntityType, string)[,]
+        sceneSetup = new BaseState[,]
         {
-            {(EntityType.goal,  "-1"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.empty,    "0"), (EntityType.goal,     "5")},
-            {(EntityType.empty, "0"), (EntityType.obstacle, "X"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X")},
-            {(EntityType.empty, "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X")},
-            {(EntityType.empty, "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X")},
-            {(EntityType.empty, "0"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X")},
-            {(EntityType.empty, "0"), (EntityType.obstacle, "X"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0")},
-            {(EntityType.empty, "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X"), (EntityType.empty,    "0"), (EntityType.goal,     "1"), (EntityType.obstacle, "X")},
-            {(EntityType.agent, "0"), (EntityType.empty,    "0"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X"), (EntityType.obstacle, "X")}
+            {new GoalState("-1"), new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X"), new EmptyState("0")   , new GoalState("5")    },
+            {new EmptyState("0"), new ObstacleState("X"), new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new ObstacleState("X")},
+            {new EmptyState("0"), new EmptyState("0")   , new EmptyState("0")   , new ObstacleState("X"), new ObstacleState("X"), new EmptyState("0")   , new EmptyState("0")   , new ObstacleState("X")},
+            {new EmptyState("0"), new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new ObstacleState("X")},
+            {new EmptyState("0"), new ObstacleState("X"), new ObstacleState("X"), new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new ObstacleState("X"), new ObstacleState("X")},
+            {new EmptyState("0"), new ObstacleState("X"), new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   },
+            {new EmptyState("0"), new EmptyState("0")   , new EmptyState("0")   , new EmptyState("0")   , new ObstacleState("X"), new EmptyState("0")   , new GoalState("1")    , new ObstacleState("X")},
+            {new Agent("0")     , new EmptyState("0")   , new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X"), new ObstacleState("X")}
         };
 
         // Generates empty cells
         Board.GenerateGrid();
 
-        Model.SetUp(sceneSetup, Board);
+        Model.SetUp(sceneSetup);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        Model.Step();
-    }
-
-    public enum EntityType
-    {
-        agent,
-        goal,
-        obstacle,
-        empty
+        //Model.Step();
     }
 }

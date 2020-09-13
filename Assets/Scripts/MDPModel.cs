@@ -1,21 +1,30 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 using static GameManager;
 
+/// <summary>
+/// This class implements the Markov Decision Process algorithm.
+/// Due to it's tight coupling with the board pieces, it acts as
+/// an entity manager to move the agent through it's environment
+/// </summary>
 public class MDPModel : MonoBehaviour
 {
-    BoardManager Board;
+    public BoardManager Board;
+
+    // We generate states dynamically!
+    public GameObject StatePrefab;
 
     //A Map of EntityType to their respective resource ID in our Resources Directory for quick lookup
-    public Dictionary<EntityType, string> entityIDCatalouge = new Dictionary<EntityType, string>
+    public Dictionary<Type, string> entityIDCatalouge = new Dictionary<Type, string>
     {
-        [EntityType.agent]    = "agent_idle",
-        [EntityType.goal]     = "goal_idle",
-        [EntityType.obstacle] = "obstacle_idle",
-        [EntityType.empty]    = ""
+        [typeof(Agent)]         = "agent_idle",
+        [typeof(GoalState)]     = "goal_idle",
+        [typeof(ObstacleState)] = "obstacle_idle",
+        [typeof(EmptyState)]    = ""
     };
 
     // An array of all Goal States within the current simulation
@@ -32,10 +41,8 @@ public class MDPModel : MonoBehaviour
     //Matrix of cell rewards
     private string[,] RewardMatrix;
 
-    public void SetUp((EntityType, string)[,] sceneMap, BoardManager board)
+    public void SetUp(BaseState[,] sceneMap)
     {
-        Board = board;
-
         int rows = sceneMap.GetLength(0);
         int cols = sceneMap.GetLength(1);
 
@@ -46,16 +53,16 @@ public class MDPModel : MonoBehaviour
         {
             for (int j = 0; j < cols; j++)
             {
-                EntityType currentEntityType = sceneMap[rows - i - 1, j].Item1;
-                string currentOrigionalReward = sceneMap[rows - i - 1, j].Item2;
+                Type currentEntityType = sceneMap[rows - i - 1, j].GetType();
+                string currentOrigionalReward = sceneMap[rows - i - 1, j].GetReward();
 
                 //Populate the given cell with the entity
                 SetEntity(new Vector2Int(i, j), currentEntityType, currentOrigionalReward);
 
                 //Populate fields for the states
-                if (currentEntityType == EntityType.agent) AgentPosn = (i, j);
-                else if (currentEntityType == EntityType.goal) GoalStates.Add((i, j));
-                else if (currentEntityType == EntityType.obstacle) Obstacles.Add((i, j));
+                if (currentEntityType == typeof(Agent)) AgentPosn = (i, j);
+                else if (currentEntityType == typeof(GoalState)) GoalStates.Add((i, j));
+                else if (currentEntityType == typeof(ObstacleState)) Obstacles.Add((i, j));
 
                 // Set's origional value for V_0 of the reward matrix
                 RewardMatrix[rows - i - 1, j] = currentOrigionalReward;
@@ -84,15 +91,15 @@ public class MDPModel : MonoBehaviour
 
     }
 
-    public void SetEntity(Vector2Int tileCoords, EntityType entityType, string origReward)
+    public void SetEntity(Vector2Int tileCoords, Type entityType, string origReward)
     {
         Cell subjectCell = Board.BoardCells[tileCoords.y, tileCoords.x];
         string entityID = entityIDCatalouge[entityType];
 
         // Generates a prefab instance from our resources directory
-        GameObject resourceInit = (entityType != EntityType.empty) ? (GameObject)Instantiate(Resources.Load(entityID)) : null;
+        GameObject resourceInit = (entityType != typeof(EmptyState)) ? (GameObject)Instantiate(Resources.Load(entityID)) : null;
 
-        subjectCell.PlacePiece(resourceInit, origReward);
+        subjectCell.PlacePiece(resourceInit, entityType, origReward);
     }
 
     public void UpdateCellRewards(string[,] rewardMatrix)

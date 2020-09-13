@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class ObstacleState : BaseState
 {
-    public override void DisplayEntity(Cell parent)
+    public ObstacleState(string reward)
     {
-        parentCell = parent;
-
-        Vector2 parentPosition = parentCell.GetTileCenter();
-        transform.position = new Vector3(parentPosition.x, parentPosition.y, -1);
-
-        parentCell.RewardDisplay.text = "X";
+        Reward = reward;
     }
 }
