@@ -24,7 +24,7 @@ public class MDPModel : MonoBehaviour
         [typeof(Agent)]         = "agent_idle",
         [typeof(GoalState)]     = "goal_idle",
         [typeof(ObstacleState)] = "obstacle_idle",
-        [typeof(EmptyState)]    = ""
+        [typeof(EmptyState)]    = "empty_idle"
     };
 
     // An array of all Goal States within the current simulation
@@ -34,7 +34,7 @@ public class MDPModel : MonoBehaviour
     private List<(int, int)> Obstacles = new List<(int, int)>();
 
     //For simplicity we start with only one agent ~ Location of the agent on the board
-    private (int, int) AgentPosn;
+    private Vector2Int AgentPosn;
     float intendedProb = 0.8f;
     float unintendedProb = 0.1f;
 
@@ -60,7 +60,7 @@ public class MDPModel : MonoBehaviour
                 SetEntity(new Vector2Int(i, j), currentEntityType, currentOrigionalReward);
 
                 //Populate fields for the states
-                if (currentEntityType == typeof(Agent)) AgentPosn = (i, j);
+                if (currentEntityType == typeof(Agent)) AgentPosn = new Vector2Int(i, j);
                 else if (currentEntityType == typeof(GoalState)) GoalStates.Add((i, j));
                 else if (currentEntityType == typeof(ObstacleState)) Obstacles.Add((i, j));
 
@@ -84,6 +84,41 @@ public class MDPModel : MonoBehaviour
         Debug.Log(resStr);
     }
 
+    #region Update Cycle
+    // Next update in second
+    private int nextUpdate = 1;
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        // If the next update is reached
+        if (Time.time >= nextUpdate)
+        {
+            //Debug.Log(Time.time + ">=" + nextUpdate);
+            // Change the next update (current second+1)
+            nextUpdate = Mathf.FloorToInt(Time.time) + 1;
+            // Call your fonction
+            UpdateEverySecond();
+        }
+
+    }
+
+    // Update is called once per second
+    void UpdateEverySecond()
+    {
+        MoveAgent(Vector2Int.up + Vector2Int.right);
+    }
+
+    #endregion
+
+    private void MoveAgent(Vector2Int dir)
+    {
+        //TODO: Temp right now, just for testing
+        Board.MoveEntities(AgentPosn, dir);
+        AgentPosn += dir;
+    }
+
     //Once the Initial Board is set, it is time for us to perform MDP to get the agent's optimal policy
     //In it's environment!
     public void Step()
@@ -97,9 +132,12 @@ public class MDPModel : MonoBehaviour
         string entityID = entityIDCatalouge[entityType];
 
         // Generates a prefab instance from our resources directory
-        GameObject resourceInit = (entityType != typeof(EmptyState)) ? (GameObject)Instantiate(Resources.Load(entityID)) : null;
+        GameObject resourceInit = (GameObject)Instantiate(Resources.Load(entityID));
 
-        subjectCell.PlacePiece(resourceInit, entityType, origReward);
+        BaseState newState = (BaseState)resourceInit.AddComponent(entityType);
+        newState.SetReward(origReward);
+
+        subjectCell.PlacePiece(newState);
     }
 
     public void UpdateCellRewards(string[,] rewardMatrix)

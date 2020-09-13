@@ -56,4 +56,25 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+
+    //Swap's entities between Cells, used to simulate agent movement in the dungeon for the user
+    public void MoveEntities(Vector2Int entity, Vector2Int dir)
+    {
+        Vector2Int swapPosn = entity + dir;
+
+        if(swapPosn.x >= 0 &&
+           swapPosn.x < Rows &&
+           swapPosn.y >= 0 &&
+           swapPosn.y < Cols)
+        {
+            Debug.Log("Swapping " + entity.x + "," + entity.y + " With " + swapPosn.x + "," + swapPosn.y);
+            Cell subject1 = BoardCells[swapPosn.x, swapPosn.y];
+            Cell subject2 = BoardCells[entity.x, entity.y];
+
+            //Swaps Entities
+            BaseState temp = subject1.Entity;
+            subject1.PlacePiece(subject2.Entity);
+            subject2.PlacePiece(temp);
+        }
+    }
 }

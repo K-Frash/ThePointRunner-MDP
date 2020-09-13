@@ -32,23 +32,14 @@ public class Cell : MonoBehaviour
         CellRectTransform.sizeDelta =  new Vector2(Board.TileWidth, Board.TileHeight);
     }
 
-    public void PlacePiece(GameObject entityInit, Type entityType, string reward)
+    public void PlacePiece(BaseState entityInit)
     {
-        BaseState newState = null;
-        if (entityInit)
-        {
-            entityInit.transform.parent = this.transform;
-            entityInit.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + 20); //slight offset of 10
-
-            //Generate the new Piece
-            newState = (BaseState)entityInit.AddComponent(entityType);
-        }
-
-        //RewardDisplay will still be provided regardless of the EntityType
-        RewardDisplay.text = reward;
+        entityInit.transform.parent = this.transform;
+        entityInit.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + 20); //slight offset of 10
+        RewardDisplay.text = entityInit.GetReward();
 
         // Set's the entity on the current Cell
-        Entity = newState;
+        Entity = entityInit;
     }
 
     public Vector2 GetTileCenter()
