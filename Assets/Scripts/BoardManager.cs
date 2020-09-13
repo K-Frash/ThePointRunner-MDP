@@ -51,7 +51,7 @@ public class BoardManager : MonoBehaviour
 
                 //Setup Cell
                 BoardCells[row, col] = tilePrefab.GetComponent<Cell>();
-                BoardCells[row, col].Setup(new Vector2Int(row, col), this);
+                BoardCells[row, col].GenerateNewCellSetup(new Vector2Int(row, col), this);
                 BoardCells[row, col].GetComponent<Image>().color = curColor;
             }
         }

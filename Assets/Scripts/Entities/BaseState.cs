@@ -5,8 +5,7 @@ using UnityEngine.UI;
 public class BaseState : EventTrigger
 {
     protected Cell parentCell;
-    protected float Reward = 0;
-    public virtual void SetupAgent(Cell parent)
+    public virtual void DisplayEntity(Cell parent)
     {
         parentCell = parent;
 

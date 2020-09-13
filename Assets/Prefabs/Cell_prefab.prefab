@@ -94,7 +94,6 @@ MonoBehaviour:
   OutlineImage: {fileID: 114070471298161070}
   RewardDisplay: {fileID: 7752745646637540107}
   Entity: {fileID: 0}
-  Reward: 0
   BoardPosition: {x: 0, y: 0}
   Board: {fileID: 0}
   CellRectTransform: {fileID: 0}
